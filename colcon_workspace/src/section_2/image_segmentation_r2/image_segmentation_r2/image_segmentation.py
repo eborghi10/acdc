@@ -54,7 +54,7 @@ class ImageSegmentation(Node):
 
         # resize image
         input_img = resize_image(input_img, [self.resize_height, self.resize_width])
-        
+
         # append batch dimension
         input_img = input_img[None]
         t1 = time.time()
@@ -75,7 +75,7 @@ class ImageSegmentation(Node):
 
         # assign header of input msg
         seg_msg.header = img_color_msg.header
-        
+
         t3 = time.time()
 
         # log processing duration
@@ -107,7 +107,7 @@ class ImageSegmentation(Node):
         with tf.io.gfile.GFile(path_to_frozen_graph, 'rb') as file_handle:
             graph_def = tf.compat.v1.GraphDef()
             loaded = graph_def.ParseFromString(file_handle.read())
-        
+
         # Wrap frozen graph to ConcreteFunctions
         self.frozen_func = self.wrap_frozen_graph(graph_def=graph_def,
                                                   inputs=[self.input_tensor_name],
@@ -127,23 +127,11 @@ class ImageSegmentation(Node):
         :return: RGB encoding with shape (height, width, 3)
         """
 
-        ### START CODE HERE ###
-        
-        # Task 1:
-        # Replace the following command
-        rgb_encoding = np.random.randint(
-            low=0,
-            high=255,
-            size=[self.resize_height, self.resize_width, 3]
-        )
-
-        ### END CODE HERE ###
-
-        return rgb_encoding
+        return self.color_palette[segmentation_map]
 
     def parse_convert_xml(self, conversion_file_path):
         """
-        Parse XML conversion file and compute color_palette 
+        Parse XML conversion file and compute color_palette
         """
 
         defRoot = ET.parse(conversion_file_path).getroot()
@@ -181,7 +169,7 @@ class ImageSegmentation(Node):
 
         # get the directory that this script is in
         package_dir = get_package_share_directory('image_segmentation_r2')
-        
+
         # get the filename from the parameter and append it to the script directory
         frozen_graph_file = self.get_parameter('frozen_graph').get_parameter_value().string_value
         self.frozen_graph = os.path.join(package_dir,  frozen_graph_file)
@@ -201,7 +189,7 @@ class ImageSegmentation(Node):
         self.cv_bridge = CvBridge()
         # load frozen graph
         self.load_frozen_graph(self.frozen_graph)
-        # create publisher for passing on depth estimation and camera info      
+        # create publisher for passing on depth estimation and camera info
         self.pub_seg = self.create_publisher(Image, "/image_segmented", 10)
         # listen for input image and camera info
         self.sub_image = self.create_subscription(Image, "/image_color", self.predict, 10) # buff_size = 500 MB
@@ -222,7 +210,7 @@ class ImageSegmentation(Node):
 
             # load parameters
             self.load_parameters()
- 
+
             # setup components
             self.setup()
 
@@ -233,7 +221,7 @@ def main(args=None):
 
     # keep node from exiting
     rclpy.spin(vision)
-    
+
     #ROS2 needs .destroy_node after spinning
     vision.destroy_node()
     rclpy.shutdown()

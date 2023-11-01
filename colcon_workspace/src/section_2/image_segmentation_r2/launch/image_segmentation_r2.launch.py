@@ -20,7 +20,7 @@ def generate_launch_description():
 
     # ROSBAG PLAY node
     rosbag_play_node = ExecuteProcess(
-        cmd=['ros2', 'bag', 'play', '--rate', '0.05', '-l',
+        cmd=['ros2', 'bag', 'play', '--rate', '1.0', '-l',
              '/home/rosuser/ws/bag/left_camera_templergraben.db3',
              '--topics', '/sensors/camera/left/image_raw',
              '/sensors/camera/left/camera_info'],
