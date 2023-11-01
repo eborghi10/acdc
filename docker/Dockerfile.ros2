@@ -1,4 +1,4 @@
-FROM rwthika/ros2:humble-desktop-full
+FROM rwthika/ros2-ml:humble-desktop-tf2.11.0-torch2.0.1
 
 RUN apt-get update && apt-get install -q -y --no-install-recommends \
     curl \

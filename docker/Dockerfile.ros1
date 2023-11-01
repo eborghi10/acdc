@@ -1,4 +1,4 @@
-FROM rwthika/noetic-tf-2.8:latest
+FROM rwthika/ros-ml:noetic-desktop-full-tf2.11.0-torch2.0.1
 ARG TARGETARCH
 
 USER root
