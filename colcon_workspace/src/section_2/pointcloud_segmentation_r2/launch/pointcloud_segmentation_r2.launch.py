@@ -11,16 +11,16 @@ def generate_launch_description():
     # Get the package and params directory
     image_segmentation_dir = get_package_share_directory('pointcloud_segmentation_r2')
     config = os.path.join(image_segmentation_dir, "config","params.yaml")
-    
+
     # Declare launch arguments
     use_sim_time = DeclareLaunchArgument(
         'use_sim_time',
         default_value='true',
         description='Use simulation clock time')
-        
+
     # ROSBAG PLAY node
     rosbag_play_node = ExecuteProcess(
-        cmd=['ros2', 'bag', 'play','--rate', '0.75', '-l',
+        cmd=['ros2', 'bag', 'play','--rate', '1.0', '-l',
              '/home/rosuser/ws/bag/lidar_campus_melaten.db3',
         ],
         output='screen'

@@ -46,7 +46,7 @@ class PCLSegmentation(Node):
     Implements a point cloud segmentation node.
     """
     def predict(self, pcl_msg):
-        
+
         pcl = pc2.read_points(pcl_msg)
 
         # Cast the structured NumPy array to a regular NumPy array
@@ -124,14 +124,8 @@ class PCLSegmentation(Node):
                                              fields=self.point_field,
                                              points=points)
 
-        ### START TASK 2 CODE HERE ###
-
-        # Task 2:
         # call publisher to publish the message "segmented_pcl_msg"
-
-
-        ### END TASK 2 CODE HERE ###
-
+        self.pub_seg.publish(segmented_pcl_msg)
 
     def pcl_spherical_projection(self, pcl, height, width, num_channels, leftPhi, rightPhi):
 
@@ -271,7 +265,7 @@ class PCLSegmentation(Node):
 
     def parse_convert_xml(self, conversion_file_path):
         """
-        Parse XML conversion file and compute color_palette 
+        Parse XML conversion file and compute color_palette
         """
         defRoot = ET.parse(conversion_file_path).getroot()
 
@@ -337,15 +331,10 @@ class PCLSegmentation(Node):
         # create point field for cloud_creator
         self.point_field = self.make_point_field()
 
-        ### START TASK 1 CODE HERE ###
-
-        # Task 1:
         # create publisher for the segmented point cloud, publish on topic "/points2_segmented"
         # The publish type is the PointCloud2 data format
+        self.pub_seg = self.create_publisher(PointCloud2, "/points2_segmented", 1)
 
-        
-        ### END TASK 1 CODE HERE ###
-        
         # listen for input image and camera info
         self.sub_pcl = self.create_subscription(PointCloud2, "/points2", self.predict, 1)
 
@@ -359,16 +348,16 @@ class PCLSegmentation(Node):
         self.get_logger().info("Initializing pointcloud_segmentation node...")
 
         # decleare parameters
-        self.declare_parameter('model_path', rclpy.Parameter.Type.STRING) 
-        self.declare_parameter('palette_file', rclpy.Parameter.Type.STRING) 
-        self.declare_parameter('do_visualizations', rclpy.Parameter.Type.BOOL) 
-        self.declare_parameter('num_classes',rclpy.Parameter.Type.INTEGER) 
+        self.declare_parameter('model_path', rclpy.Parameter.Type.STRING)
+        self.declare_parameter('palette_file', rclpy.Parameter.Type.STRING)
+        self.declare_parameter('do_visualizations', rclpy.Parameter.Type.BOOL)
+        self.declare_parameter('num_classes',rclpy.Parameter.Type.INTEGER)
         self.declare_parameter('left_azimuth',rclpy.Parameter.Type.DOUBLE)
         self.declare_parameter('right_azimuth',rclpy.Parameter.Type.DOUBLE)
         self.declare_parameter('num_rings',rclpy.Parameter.Type.INTEGER)
         self.declare_parameter('num_azimuth',rclpy.Parameter.Type.INTEGER)
         self.declare_parameter('normalization_mean', rclpy.Parameter.Type.DOUBLE_ARRAY)
-        self.declare_parameter('normalization_std', rclpy.Parameter.Type.DOUBLE_ARRAY) 
+        self.declare_parameter('normalization_std', rclpy.Parameter.Type.DOUBLE_ARRAY)
 
         # load parameters
         self.load_parameters()
